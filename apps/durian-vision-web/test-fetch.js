@@ -1,0 +1,1 @@
+fetch('http://localhost:3005/api/auth/sign-up/email', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Origin': 'http://localhost:5173' }, body: JSON.stringify({ name: 'Faunas', email: 'f5@f.com', password: 'faunas123' }) }).then(r => r.json()).then(console.log).catch(console.error)

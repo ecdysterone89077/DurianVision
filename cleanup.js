@@ -1,0 +1,1 @@
+const { createClient } = require('@libsql/client'); const db = createClient({ url: 'file:packages/backend/sqlite.db' }); db.execute('DELETE FROM users WHERE email=\'faunas@gmail.com\'').then(() => console.log('Deleted')).catch(console.error);

@@ -1,0 +1,1 @@
+const { createClient } = require('@libsql/client'); const db = createClient({ url: 'file:packages/backend/sqlite.db' }); db.execute('SELECT email FROM users').then(r => console.log(r.rows)).catch(console.error);

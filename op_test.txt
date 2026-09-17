@@ -1,0 +1,266 @@
+
+============================================================
+  [1] PYTHON ENVIRONMENT & DEPENDENCIES
+============================================================
+  ✅ Python version >= 3.10
+  ✅ PyQt6 installed
+  ✅ numpy installed
+  ✅ cv2 (opencv) installed
+  ✅ PIL (Pillow) installed
+  ✅ psutil installed
+  ✅ openpyxl installed
+  ✅ pynput installed
+  ✅ ultralytics (YOLO) installed
+  ✅ Screen capture engine available (mss or dxcam)
+
+============================================================
+  [2] FILE STRUCTURE INTEGRITY
+============================================================
+  ✅ File exists: main.py
+  ✅ File exists: best.pt
+  ✅ File exists: requirements.txt
+  ✅ File exists: config/default_config.json
+  ✅ File exists: core/__init__.py
+  ✅ File exists: core/config_manager.py
+  ✅ File exists: core/detection_worker.py
+  ✅ File exists: core/device_detector.py
+  ✅ File exists: core/global_hotkeys.py
+  ✅ File exists: core/log_manager.py
+  ✅ File exists: core/screen_capture.py
+  ✅ File exists: core/snapshot_manager.py
+  ✅ File exists: core/yolo_engine.py
+  ✅ File exists: ui/__init__.py
+  ✅ File exists: ui/app.py
+  ✅ File exists: ui/control_panel.py
+  ✅ File exists: ui/overlay_window.py
+  ✅ File exists: ui/roi_selector.py
+  ✅ File exists: ui/tray_icon.py
+  ✅ File exists: ui/styles/theme.py
+  ✅ File exists: ui/tabs/__init__.py
+  ✅ File exists: ui/tabs/detection_tab.py
+  ✅ File exists: ui/tabs/performance_tab.py
+  ✅ File exists: ui/tabs/snapshot_tab.py
+  ✅ File exists: ui/tabs/log_tab.py
+  ✅ File exists: ui/tabs/settings_tab.py
+  ✅ File exists: ui/widgets/__init__.py
+  ✅ File exists: ui/widgets/confidence_slider.py
+  ✅ File exists: ui/widgets/fps_slider.py
+  ✅ File exists: ui/widgets/detection_list.py
+  ✅ File exists: ui/widgets/resource_monitor.py
+  ✅ File exists: ui/widgets/snapshot_gallery.py
+  ✅ File exists: ui/widgets/log_table.py
+  ✅ best.pt file size > 1MB
+
+============================================================
+  [3] CORE IMPORTS — All Modules
+============================================================
+  ✅ Import all 8 core modules
+  ✅ Import all 18 UI modules
+
+============================================================
+  [4] CONFIG MANAGER
+============================================================
+  ✅ ConfigManager loads all 10 config sections
+  ✅ ConfigManager.get() returns correct value (confidence=0.72)
+  ✅ ConfigManager.get() returns default for missing keys
+  ✅ ConfigManager.set() updates value correctly
+  ✅ ConfigManager.save() persists to disk
+  ✅ ConfigManager.get_section('overlay') returns complete section
+  ✅ ConfigManager.get_variety_colors() returns 11 varieties
+  ✅ ConfigManager singleton pattern works
+
+============================================================
+  [5] YOLO ENGINE
+============================================================
+[YOLOEngine] CUDA tidak tersedia, menggunakan CPU
+[YOLOEngine] Model dimuat: best.pt pada cpu
+[Classifier] File classifier tidak ditemukan: classifier.pt — menggunakan YOLO-only mode
+[YOLOEngine] Two-stage mode NONAKTIF — File classifier tidak ditemukan: classifier.pt
+  ✅ YOLOEngine loads best.pt successfully
+[YOLOEngine] CUDA tidak tersedia, menggunakan CPU
+[YOLOEngine] Model dimuat: best.pt pada cpu
+[Classifier] File classifier tidak ditemukan: classifier.pt — menggunakan YOLO-only mode
+[YOLOEngine] Two-stage mode NONAKTIF — File classifier tidak ditemukan: classifier.pt
+  ✅ YOLOEngine device is cpu or cuda
+[YOLOEngine] CUDA tidak tersedia, menggunakan CPU
+[YOLOEngine] Model dimuat: best.pt pada cpu
+[Classifier] File classifier tidak ditemukan: classifier.pt — menggunakan YOLO-only mode
+[YOLOEngine] Two-stage mode NONAKTIF — File classifier tidak ditemukan: classifier.pt
+  ✅ YOLOEngine.model_names returns non-empty list
+[YOLOEngine] CUDA tidak tersedia, menggunakan CPU
+[YOLOEngine] Model dimuat: best.pt pada cpu
+[Classifier] File classifier tidak ditemukan: classifier.pt — menggunakan YOLO-only mode
+[YOLOEngine] Two-stage mode NONAKTIF — File classifier tidak ditemukan: classifier.pt
+  ✅ YOLOEngine.predict() on empty frame returns list
+[YOLOEngine] CUDA tidak tersedia, menggunakan CPU
+[YOLOEngine] Model dimuat: best.pt pada cpu
+[Classifier] File classifier tidak ditemukan: classifier.pt — menggunakan YOLO-only mode
+[YOLOEngine] Two-stage mode NONAKTIF — File classifier tidak ditemukan: classifier.pt
+  ✅ YOLOEngine.predict() on random 640x480 frame returns list
+[YOLOEngine] CUDA tidak tersedia, menggunakan CPU
+[YOLOEngine] Model dimuat: best.pt pada cpu
+[Classifier] File classifier tidak ditemukan: classifier.pt — menggunakan YOLO-only mode
+[YOLOEngine] Two-stage mode NONAKTIF — File classifier tidak ditemukan: classifier.pt
+  ✅ YOLOEngine.predict(None) returns empty list (no crash)
+[YOLOEngine] CUDA tidak tersedia, menggunakan CPU
+[YOLOEngine] Model dimuat: best.pt pada cpu
+[Classifier] File classifier tidak ditemukan: classifier.pt — menggunakan YOLO-only mode
+[YOLOEngine] Two-stage mode NONAKTIF — File classifier tidak ditemukan: classifier.pt
+  ✅ YOLOEngine.predict(empty array) returns empty list (no crash)
+[YOLOEngine] CUDA tidak tersedia, menggunakan CPU
+[YOLOEngine] Model dimuat: best.pt pada cpu
+[Classifier] File classifier tidak ditemukan: classifier.pt — menggunakan YOLO-only mode
+[YOLOEngine] Two-stage mode NONAKTIF — File classifier tidak ditemukan: classifier.pt
+  ✅ YOLOEngine.last_inference_ms > 0 after predict
+[YOLOEngine] CUDA tidak tersedia, menggunakan CPU
+[YOLOEngine] File model tidak ditemukan: nonexistent_model.pt
+[Classifier] File classifier tidak ditemukan: classifier.pt — menggunakan YOLO-only mode
+[YOLOEngine] Two-stage mode NONAKTIF — File classifier tidak ditemukan: classifier.pt
+  ✅ YOLOEngine gracefully handles missing model file
+[YOLOEngine] CUDA tidak tersedia, menggunakan CPU
+[YOLOEngine] Model dimuat: best.pt pada cpu
+[Classifier] File classifier tidak ditemukan: classifier.pt — menggunakan YOLO-only mode
+[YOLOEngine] Two-stage mode NONAKTIF — File classifier tidak ditemukan: classifier.pt
+  ✅ YOLOEngine.change_device('cpu') works
+
+============================================================
+  [6] SCREEN CAPTURE
+============================================================
+  ✅ ScreenCapture has available engine
+  ✅ ScreenCapture.set_region() stores correct coords
+  ✅ ScreenCapture MSS region format is correct
+  ✅ ScreenCapture._empty_frame() returns None
+  ✅ ScreenCapture rejects negative region dimensions
+[ScreenCapture] DXcam gagal: (-2147024891, 'Access is denied.', (None, None, None, 0, None)), beralih ke MSS
+[ScreenCapture] Menggunakan MSS (fallback)
+  ✅ ScreenCapture.initialize() returns valid engine name
+[ScreenCapture] DXcam gagal: (-2147024891, 'Access is denied.', (None, None, None, 0, None)), beralih ke MSS
+[ScreenCapture] Menggunakan MSS (fallback)
+  ✅ ScreenCapture.capture_frame() returns valid BGR array
+[ScreenCapture] DXcam gagal: (-2147024891, 'Access is denied.', (None, None, None, 0, None)), beralih ke MSS
+[ScreenCapture] Menggunakan MSS (fallback)
+  ✅ ScreenCapture.engine_name property works
+
+============================================================
+  [7] DEVICE DETECTOR
+============================================================
+  ✅ DeviceDetector: 360x640 → smartphone
+  ✅ DeviceDetector: 1920x1080 → desktop
+  ✅ DeviceDetector: 500x500 (square) → smartphone
+  ✅ DeviceDetector: 2560x1080 (ultrawide) → desktop
+  ✅ DeviceDetector: 0x0 → unknown (no crash)
+  ✅ DeviceDetector smartphone: size=416, line=1, font=10, no status
+  ✅ DeviceDetector desktop: size=640, line=2, font=14, status shown
+  ✅ DeviceDetector forced mode overrides auto-detection
+
+============================================================
+  [8] SNAPSHOT MANAGER
+============================================================
+  ✅ SnapshotManager saves JPG file with bounding box
+  ✅ SnapshotManager handles float bbox coords (int cast)
+  ✅ SnapshotManager saves with empty detections (no crash)
+  ✅ SnapshotManager includes metadata in filename
+  ✅ SnapshotManager hex_to_bgr('#22C55E') correct
+  ✅ SnapshotManager has 11 variety BGR colors
+  ✅ SnapshotManager generates unique filenames for 5 rapid saves
+
+============================================================
+  [9] LOG MANAGER
+============================================================
+  ✅ LogManager add + get entries
+  ✅ LogManager exports valid CSV (header + 2 rows)
+  ✅ LogManager exports valid XLSX file
+  ✅ LogManager.clear() empties all entries
+  ✅ LogManager handles 5000 rapid entries
+  ✅ LogManager caps at MAX_ENTRIES (50000)
+
+============================================================
+  [10] GLOBAL HOTKEYS
+============================================================
+  ✅ Hotkey convert: Ctrl+Shift+D → <ctrl>+<shift>+d
+  ✅ Hotkey convert: Space → <space>
+  ✅ Hotkey convert: already pynput format passes through
+  ✅ Hotkey convert: F1 → <f1>
+  ✅ Hotkey convert: Ctrl+A → <ctrl>+a
+  ✅ Hotkey convert: F1-F12 all correct
+  ✅ GlobalHotkeys has all 4 signals
+
+============================================================
+  [11] THEME & VARIETY COLORS
+============================================================
+  ✅ Theme has all 11 variety colors
+  ✅ Theme.get_variety_color('Bawor') → #22C55E
+  ✅ Theme color lookup is case-insensitive
+  ✅ Theme MODEL_CLASS_MAP resolves all 6 YOLO classes
+  ✅ Theme returns Lainnya color for unknown variety
+  ✅ Theme constants (BG, ACCENT, DEVICE) correct
+
+============================================================
+  [12] DETECTION WORKER (Unit)
+============================================================
+  ✅ DetectionWorker imports successfully
+[YOLOEngine] CUDA tidak tersedia, menggunakan CPU
+[YOLOEngine] Model dimuat: best.pt pada cpu
+[Classifier] File classifier tidak ditemukan: classifier.pt — menggunakan YOLO-only mode
+[YOLOEngine] Two-stage mode NONAKTIF — File classifier tidak ditemukan: classifier.pt
+  ✅ DetectionWorker has frame_processed and error_occurred signals
+[YOLOEngine] CUDA tidak tersedia, menggunakan CPU
+[YOLOEngine] Model dimuat: best.pt pada cpu
+[Classifier] File classifier tidak ditemukan: classifier.pt — menggunakan YOLO-only mode
+[YOLOEngine] Two-stage mode NONAKTIF — File classifier tidak ditemukan: classifier.pt
+  ✅ DetectionWorker.set_fps_limit(25) → _fps_limit=25
+[YOLOEngine] CUDA tidak tersedia, menggunakan CPU
+[YOLOEngine] Model dimuat: best.pt pada cpu
+[Classifier] File classifier tidak ditemukan: classifier.pt — menggunakan YOLO-only mode
+[YOLOEngine] Two-stage mode NONAKTIF — File classifier tidak ditemukan: classifier.pt
+  ✅ DetectionWorker FPS clamped to [1, 120]
+[YOLOEngine] CUDA tidak tersedia, menggunakan CPU
+[YOLOEngine] Model dimuat: best.pt pada cpu
+[Classifier] File classifier tidak ditemukan: classifier.pt — menggunakan YOLO-only mode
+[YOLOEngine] Two-stage mode NONAKTIF — File classifier tidak ditemukan: classifier.pt
+  ✅ DetectionWorker.set_confidence(0.85) works
+[YOLOEngine] CUDA tidak tersedia, menggunakan CPU
+[YOLOEngine] Model dimuat: best.pt pada cpu
+[Classifier] File classifier tidak ditemukan: classifier.pt — menggunakan YOLO-only mode
+[YOLOEngine] Two-stage mode NONAKTIF — File classifier tidak ditemukan: classifier.pt
+  ✅ DetectionWorker handles missing config section (no crash)
+
+============================================================
+  [13] MAIN.PY ENTRY POINT
+============================================================
+  ✅ main.py imports DurianVisionApp and connects aboutToQuit
+  ✅ main.py supports --autostart and --minimize args
+  ✅ main.py loads stylesheet.qss
+
+============================================================
+  [14] APP COORDINATOR (ui/app.py)
+============================================================
+  ✅ app.py connects all critical signals
+  ✅ app.py quit_app() cleans up: stop, hotkeys, tray, config
+  ✅ app.py has auto-snapshot logic
+  ✅ app.py has sound notification system
+  ✅ app.py tracks session duration and distribution
+
+============================================================
+  [15] CROSS-COMPONENT INTEGRATION
+============================================================
+  ✅ Config varieties match Theme varieties (11 each)
+[YOLOEngine] CUDA tidak tersedia, menggunakan CPU
+[YOLOEngine] Model dimuat: best.pt pada cpu
+[Classifier] File classifier tidak ditemukan: classifier.pt — menggunakan YOLO-only mode
+[YOLOEngine] Two-stage mode NONAKTIF — File classifier tidak ditemukan: classifier.pt
+  ✅ Every YOLO model class resolves to a Theme color
+  ✅ SnapshotManager BGR colors match Theme varieties
+  ✅ All default config values are correct
+[YOLOEngine] CUDA tidak tersedia, menggunakan CPU
+[YOLOEngine] Model dimuat: best.pt pada cpu
+[Classifier] File classifier tidak ditemukan: classifier.pt — menggunakan YOLO-only mode
+[YOLOEngine] Two-stage mode NONAKTIF — File classifier tidak ditemukan: classifier.pt
+  ✅ Full pipeline unit: load → detect → predict → snapshot → log → export
+
+============================================================
+============================================================
+  🎉 ALL TESTS PASSED: 125/125 (100%)
+  ✅ GUI Duren berfungsi NORMAL 100%
+============================================================
+

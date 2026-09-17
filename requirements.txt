@@ -1,0 +1,10 @@
+PyQt6
+ultralytics
+mss
+dxcam
+opencv-python-headless
+numpy
+Pillow
+openpyxl
+psutil
+pynput

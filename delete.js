@@ -1,0 +1,1 @@
+const { createClient } = require('@libsql/client'); const db = createClient({ url: 'file:packages/backend/sqlite.db' }); async function run() { await db.execute('DELETE FROM accounts'); await db.execute('DELETE FROM sessions'); await db.execute('DELETE FROM users WHERE email=\'faunas@gmail.com\''); console.log('Done'); } run();

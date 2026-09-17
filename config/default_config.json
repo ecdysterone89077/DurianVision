@@ -1,0 +1,66 @@
+{
+  "startup": {
+    "autostart": false,
+    "minimize_to_tray": false,
+    "restore_last_roi": true
+  },
+  "detection": {
+    "confidence_threshold": 0.72,
+    "fps_limit": 5,
+    "inference_size": 416,
+    "device": "cuda"
+  },
+  "overlay": {
+    "show_boxes": true,
+    "show_labels": true,
+    "show_confidence": true,
+    "line_thickness": 2,
+    "font_size": 14
+  },
+  "snapshot": {
+    "auto_enabled": false,
+    "auto_threshold": 0.85,
+    "min_interval_sec": 5,
+    "save_dir": "snapshots"
+  },
+  "log": {
+    "save_dir": "logs"
+  },
+  "audio": {
+    "enabled": true,
+    "volume": 0.5
+  },
+  "device_detection": {
+    "mode": "auto"
+  },
+  "hotkeys": {
+    "snapshot": "Space",
+    "toggle_detection": "Ctrl+Shift+D",
+    "select_roi": "Ctrl+Shift+R",
+    "hide": "Ctrl+Shift+H"
+  },
+  "roi": {
+    "x": 0,
+    "y": 0,
+    "width": 0,
+    "height": 0
+  },
+  "two_stage": {
+    "enabled": true,
+    "classifier_path": "classifier.pt",
+    "min_confidence": 0.4
+  },
+  "varieties": {
+    "Bawor": "#22C55E",
+    "Black Thorn": "#10B981",
+    "Montong": "#3B82F6",
+    "Musang King": "#EAB308",
+    "Petruk": "#A855F7",
+    "Monthong": "#EC4899",
+    "Sunan": "#F97316",
+    "Kani": "#06B6D4",
+    "Matahari": "#EF4444",
+    "Sitokong": "#84CC16",
+    "Lainnya": "#94A3B8"
+  }
+}

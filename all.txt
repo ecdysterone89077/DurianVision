@@ -1,0 +1,69 @@
+============================================================
+  GUI DUREN — COMPREHENSIVE FUNCTIONAL TEST
+============================================================
+
+[1/7] INFERENCE SIDECAR (FastAPI :8001)
+----------------------------------------
+  ✅ GET /health
+  ✅ GET /health — model_loaded=true
+  ✅ GET /model-info
+  ✅ GET /model-info — has classes
+  ✅ GET /model-info — correct classes
+  ✅ GET /system-metrics
+  ✅ GET /system-metrics — has memory_percent
+  ✅ POST /predict/base64 — accepts base64 image
+  ✅ POST /predict/base64 — returns detections array
+  ✅ POST /predict/base64 — returns inference_time_ms
+
+[2/7] BACKEND AUTH (Better-Auth :3005)
+----------------------------------------
+  ✅ POST /api/auth/sign-up/email — register
+  ✅ POST /api/auth/sign-in/email — login
+
+[3/7] BACKEND API — Varieties (:3005)
+----------------------------------------
+  ✅ GET /api/varieties — list varieties
+
+[4/7] BACKEND API — Detection & Logs (:3005)
+----------------------------------------
+  ✅ GET /api/detection — list sessions
+  ✅ GET /api/logs — list logs
+  ✅ GET /api/logs/stats — log stats
+  ✅ GET /api/logs/distribution — variety distribution
+
+[5/7] BACKEND API — Models & Performance (:3005)
+----------------------------------------
+  ✅ GET /api/models — list models
+  ✅ GET /api/performance/system — system metrics proxy
+  ✅ GET /api/performance/inference — inference info proxy
+
+[6/7] BACKEND API — Snapshots & Settings (:3005)
+----------------------------------------
+  ✅ GET /api/snapshots — list snapshots
+  ✅ GET /api/settings — get user settings
+
+[7/7] DESKTOP APP — Module Import Test
+----------------------------------------
+  ✅ Import all core modules
+  ✅ Import all UI modules
+  ✅ ConfigManager loads config correctly
+  ✅ ConfigManager.get_variety_colors() works
+  ✅ Theme.get_variety_color() — case-insensitive + aliases
+  ✅ LogManager — deque + add/get entries
+  ✅ GlobalHotkeys._convert_hotkey_format() — all formats
+  ✅ ScreenCapture._empty_frame() returns None
+[YOLOEngine] CUDA tidak tersedia, menggunakan CPU
+[YOLOEngine] Model dimuat: best.pt pada cpu
+[Classifier] File classifier tidak ditemukan: classifier.pt — menggunakan YOLO-only mode
+[YOLOEngine] Two-stage mode NONAKTIF — File classifier tidak ditemukan: classifier.pt
+  ✅ YOLOEngine loads best.pt on CPU
+
+[BONUS] FRONTEND (Vite :5173)
+----------------------------------------
+  ✅ GET http://localhost:5173 — returns HTML
+
+============================================================
+  RESULTS: 32/32 passed, 0 failed
+  PASS RATE: 100.0%
+============================================================
+

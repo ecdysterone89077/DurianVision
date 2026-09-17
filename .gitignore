@@ -1,0 +1,51 @@
+# Node
+node_modules/
+dist/
+build/
+Output/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.venv/
+venv/
+
+# ML / Training
+runs/
+output/
+*.pt
+weights/
+training/dataset/*
+!training/dataset/*.yaml
+!training/dataset/*.txt
+*.zip
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Environment
+.env
+
+# Uploads
+uploads/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
+server.log
+server2.log
+logs/
+snapshots/
+.ruff_cache/
+_verification/

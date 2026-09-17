@@ -1,0 +1,17 @@
+names:
+- bawor
+- black thorn
+- kanyao
+- monthong
+- musang king
+- not durian
+nc: 6
+roboflow:
+  license: CC BY 4.0
+  project: jenis-durian-ubzwg
+  url: https://universe.roboflow.com/deteksi-cabai-merah-besar/jenis-durian-ubzwg/dataset/1
+  version: 1
+  workspace: deteksi-cabai-merah-besar
+test: D:\GUI Duren\training\dataset\test\images
+train: D:\GUI Duren\training\dataset\train\images
+val: D:\GUI Duren\training\dataset\valid\images

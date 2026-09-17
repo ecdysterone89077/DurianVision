@@ -1,0 +1,83 @@
+=================================================================
+  GUI DUREN -- ULTRA ADVANCED PROTOCOL TEST SUITE
+=================================================================
+  Timestamp: 2026-08-31 03:33:45
+  Test user: ultra_1788122025@durian.test
+=================================================================
+
+[P1] STATE MACHINE VERIFICATION — Session Transitions
+-------------------------------------------------------
+  [PASS] 1.1 Session state machine: created->running->paused->running->completed
+  [PASS] 1.2 Multiple sessions maintain independent states
+
+[P2] IDEMPOTENCY & CONSISTENCY
+-------------------------------------------------------
+  [PASS] 2.1 Settings update is idempotent
+  [PASS] 2.2 Same image yields consistent detection count
+  [PASS] 2.3 Read-after-write linearizability (5 trials)
+
+[P3] DATA RACE DETECTION — Concurrent Writes
+-------------------------------------------------------
+  [PASS] 3.1 10 concurrent session creates -> all unique IDs
+  [PASS] 3.2 10 concurrent settings updates -> no corruption
+  [PASS] 3.3 20 mixed concurrent reads+writes -> no errors
+
+[P4] REGRESSION VERIFICATION — Previously Fixed Bugs
+-------------------------------------------------------
+[YOLOEngine] CUDA tidak tersedia, menggunakan CPU
+[YOLOEngine] Model dimuat: best.pt pada cpu
+[Classifier] File classifier tidak ditemukan: classifier.pt — menggunakan YOLO-only mode
+[YOLOEngine] Two-stage mode NONAKTIF — File classifier tidak ditemukan: classifier.pt
+  [PASS] 4.1 [BUG#1] YOLOEngine.model_path attribute exists
+  [PASS] 4.2 [BUG#2] ConfigManager.save() no makedirs crash
+  [PASS] 4.3 [BUG#3] Detection config None safety
+  [PASS] 4.4 [BUG#4] SnapshotManager float bbox -> int cast
+  [PASS] 4.5 [BUG#5] Overlay multi-monitor coords fixed in code
+  [PASS] 4.6 [BUG#6] Log.tsx Array.isArray fix present
+  [PASS] 4.7 [BUG#7] Dashboard ghost session guard present
+  [PASS] 4.8 [BUG#8] CORS origin is localhost:5173, not wildcard
+  [PASS] 4.9 [BUG#9] Graceful shutdown connected
+  [PASS] 4.10 [BUG#10] Error middleware headersSent guard
+
+[P5] API CONTRACT VALIDATION — Full Schema Checks
+-------------------------------------------------------
+  [PASS] 5.1 /health schema: status, model_loaded, device, gpu_available
+  [PASS] 5.2 /model-info schema: path, device, classes[], is_loaded, framework
+  [PASS] 5.3 /system-metrics schema: cpu_percent, memory_percent, memory_used_mb
+  [PASS] 5.4 /predict/base64 schema: detections[], inference_time_ms, model_name
+  [PASS] 5.5 /api/varieties schema: [{id, name, ...}]
+  [PASS] 5.6 All backend APIs use {success, data} wrapper
+
+[P6] PERFORMANCE DEGRADATION UNDER LOAD
+-------------------------------------------------------
+         avg=2159ms stdev=29ms cv=0.01  [PASS] 6.1 Latency stability: 20 predictions, CV < 1.0
+         avg=36ms  [PASS] 6.2 Backend avg < 500ms under 30 concurrent requests
+         growth=61MB  [PASS] 6.3 Memory growth after 10 predictions < 500MB
+
+[P7] FULL USER JOURNEY SIMULATION
+-------------------------------------------------------
+  [PASS] 7.1 Complete user journey: register->detect->export->stop
+  [PASS] 7.2 Multi-user settings isolation
+
+[P8] CORS & SECURITY HEADERS
+-------------------------------------------------------
+  [PASS] 8.1 CORS preflight returns Access-Control-Allow-Origin
+  [PASS] 8.2 Backend Content-Type is application/json
+  [PASS] 8.3 Inference CORS allows localhost:5173
+
+[P9] WEBSOCKET CONNECTIVITY CHECK
+-------------------------------------------------------
+  [PASS] 9.1 Socket.IO polling handshake -> 200
+  [PASS] 9.2 Socket.IO namespace accessible
+
+[P10] CHAOS RESILIENCE — Recovery After Errors
+-------------------------------------------------------
+  [PASS] 10.1 Inference recovers after 3 bad requests
+  [PASS] 10.2 Backend recovers after 3 bad requests
+  [PASS] 10.3 5 rapid model reloads -> prediction still works
+
+=================================================================
+  RESULTS: 37/37 passed -- PERFECT
+  PASS RATE: 100.0%
+=================================================================
+

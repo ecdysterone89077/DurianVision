@@ -1,0 +1,134 @@
+=================================================================
+  AUDIT MANUAL vs KODE — GUI Duren v2.0
+=================================================================
+
+[1] HEADER & VERSI
+  ✅ Versi 2.0 tertulis di header
+  ✅ EfficientNet-V2-S tertulis di tech stack
+  ✅ Platform Windows 10/11
+
+[2] VARIETAS
+  ✅ Manual menyebut 11 varietas di Pendahuluan
+  ✅ Manual menyebut 6 varietas terlatih
+  ✅ Varietas 'Bawor' ada di manual
+  ✅ Varietas 'Black Thorn' ada di manual
+  ✅ Varietas 'Montong' ada di manual
+  ✅ Varietas 'Musang King' ada di manual
+  ✅ Varietas 'Petruk' ada di manual
+  ✅ Varietas 'Monthong' ada di manual
+  ✅ Varietas 'Sunan' ada di manual
+  ✅ Varietas 'Kani' ada di manual
+  ✅ Varietas 'Matahari' ada di manual
+  ✅ Varietas 'Sitokong' ada di manual
+  ✅ Varietas 'Lainnya' ada di manual
+  ✅ Warna Bawor = #22C55E benar di manual
+  ✅ Warna Black Thorn = #10B981 benar di manual
+  ✅ Warna Montong = #3B82F6 benar di manual
+  ✅ Warna Musang King = #EAB308 benar di manual
+  ✅ Warna Petruk = #A855F7 benar di manual
+  ✅ Warna Monthong = #EC4899 benar di manual
+  ✅ Warna Sunan = #F97316 benar di manual
+  ✅ Warna Kani = #06B6D4 benar di manual
+  ✅ Warna Matahari = #EF4444 benar di manual
+  ✅ Warna Sitokong = #84CC16 benar di manual
+  ✅ Warna Lainnya = #94A3B8 benar di manual
+
+[3] CONFIG JSON
+  ✅ Section 'startup' ada di manual
+  ✅ Section 'detection' ada di manual
+  ✅ Section 'overlay' ada di manual
+  ✅ Section 'snapshot' ada di manual
+  ✅ Section 'log' ada di manual
+  ✅ Section 'audio' ada di manual
+  ✅ Section 'device_detection' ada di manual
+  ✅ Section 'hotkeys' ada di manual
+  ✅ Section 'roi' ada di manual
+  ✅ Section 'two_stage' ada di manual
+  ✅ Section 'varieties' ada di manual
+  ✅ confidence_threshold = 0.72
+  ✅ fps_limit = 5
+  ✅ inference_size = 416
+  ✅ auto_threshold = 0.85
+  ✅ min_interval_sec = 5
+  ✅ two_stage.enabled = true
+  ✅ two_stage.classifier_path = classifier.pt
+  ✅ two_stage.min_confidence = 0.4
+
+[4] HOTKEYS
+  ✅ Hotkey 'snapshot' = 'Space' di manual
+  ✅ Hotkey 'toggle_detection' = 'Ctrl+Shift+D' di manual
+  ✅ Hotkey 'select_roi' = 'Ctrl+Shift+R' di manual
+  ✅ Hotkey 'hide' = 'Ctrl+Shift+H' di manual
+
+[5] STRUKTUR FILE
+  ✅ File 'main.py' ada di manual
+  ✅ File 'best.pt' ada di manual
+  ✅ File 'classifier.pt' ada di manual
+  ✅ File 'requirements.txt' ada di manual
+  ✅ File 'config_manager.py' ada di manual
+  ✅ File 'detection_worker.py' ada di manual
+  ✅ File 'device_detector.py' ada di manual
+  ✅ File 'global_hotkeys.py' ada di manual
+  ✅ File 'log_manager.py' ada di manual
+  ✅ File 'screen_capture.py' ada di manual
+  ✅ File 'snapshot_manager.py' ada di manual
+  ✅ File 'variety_classifier.py' ada di manual
+  ✅ File 'yolo_engine.py' ada di manual
+  ✅ File 'app.py' ada di manual
+  ✅ File 'control_panel.py' ada di manual
+  ✅ File 'overlay_window.py' ada di manual
+  ✅ File 'roi_selector.py' ada di manual
+  ✅ File 'tray_icon.py' ada di manual
+  ✅ File 'theme.py' ada di manual
+  ✅ File 'stylesheet.qss' ada di manual
+  ✅ File 'detection_tab.py' ada di manual
+  ✅ File 'performance_tab.py' ada di manual
+  ✅ File 'snapshot_tab.py' ada di manual
+  ✅ File 'log_tab.py' ada di manual
+  ✅ File 'settings_tab.py' ada di manual
+  ✅ File 'DurianVision_Training_Colab.ipynb' ada di manual
+  ✅ File 'DurianVision_Classifier_Colab.ipynb' ada di manual
+
+[6] TWO-STAGE PIPELINE
+  ✅ Two-Stage Pipeline section ada
+  ✅ YOLO-Only mode terdokumentasi
+  ✅ classifier.pt fallback terdokumentasi
+  ✅ Pipeline status di tray tooltip
+  ✅ Pipeline status di status bar
+
+[7] TRAY ICON
+  ✅ Tooltip format dengan pipeline tag
+  ✅ 3 status warna (kuning/hijau/merah)
+  ✅ Klik Kanan = menu konteks
+  ✅ Klik Ganda = panel kontrol
+
+[8] DIAGRAM ARSITEKTUR
+  ✅ VarietyClassifier ada di diagram
+  ✅ classifier.pt ada di diagram IO layer
+  ✅ ScreenCapture fallback diagram
+
+[9] PESAN ERROR
+  ✅ Error msg '[YOLOEngine] CUDA tidak tersedia...' ada
+  ✅ Error msg '[ScreenCapture] DXcam gagal...' ada
+  ✅ Error msg '[ConfigManager] Gagal memuat config...' ada
+
+[10] DEPENDENCIES
+  ✅ Dependency 'PyQt6' tercatat
+  ✅ Dependency 'ultralytics' tercatat
+  ✅ Dependency 'mss' tercatat
+  ✅ Dependency 'dxcam' tercatat
+  ✅ Dependency 'opencv-python-headless' tercatat
+  ✅ Dependency 'numpy' tercatat
+  ✅ Dependency 'Pillow' tercatat
+  ✅ Dependency 'openpyxl' tercatat
+  ✅ Dependency 'psutil' tercatat
+  ✅ Dependency 'pynput' tercatat
+
+[11] FOOTER
+  ✅ Footer versi v2.0
+
+=================================================================
+  HASIL AUDIT: 103/103 SESUAI (100.0%)
+=================================================================
+
+  ✅ MANUAL 100% SESUAI DENGAN KODE!
