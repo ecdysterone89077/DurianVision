@@ -90,16 +90,20 @@ class SnapshotGallery(QWidget):
         col = idx % self.COLUMNS
         self.grid.addWidget(card, row, col)
     
-    def load_from_directory(self, directory: str) -> None:
-        """Load existing snapshots from a directory."""
+    def load_from_directory(self, directory: str, limit: int = 24) -> None:
+        """Load existing snapshots from a directory (terbaru dulu, maksimal `limit`)."""
         if not os.path.isdir(directory):
             return
-        for filename in sorted(os.listdir(directory)):
-            if filename.lower().endswith(('.jpg', '.png', '.jpeg')):
-                filepath = os.path.join(directory, filename)
-                pixmap = QPixmap(filepath)
-                if not pixmap.isNull():
-                    self.add_snapshot(pixmap, "", "", filename)
+        names = [
+            filename for filename in os.listdir(directory)
+            if filename.lower().endswith(('.jpg', '.png', '.jpeg'))
+        ]
+        names.sort(reverse=True)
+        for filename in names[:limit]:
+            filepath = os.path.join(directory, filename)
+            pixmap = QPixmap(filepath)
+            if not pixmap.isNull():
+                self.add_snapshot(pixmap, "", "", filename)
         
     def clear_gallery(self) -> None:
         """Remove all snapshot cards."""

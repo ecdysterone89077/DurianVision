@@ -4,6 +4,7 @@ Handles model loading and inference with graceful error handling.
 Supports two-stage pipeline: YOLO detect → Classifier classify.
 """
 
+import threading
 import time
 
 import numpy as np
@@ -51,6 +52,7 @@ class YOLOEngine:
             classifier_min_confidence: Minimum classifier confidence to override YOLO
         """
         self.model_path = model_path
+        self._lock = threading.RLock()
         self.device = self._resolve_device(device)
         self._model = None
         self._is_loaded = False
@@ -77,13 +79,16 @@ class YOLOEngine:
 
     def _resolve_device(self, requested: str) -> str:
         """Resolve the best available device (CUDA -> CPU fallback)."""
-        if requested.lower() in ('cuda', 'gpu'):
+        req = (requested or '').lower()
+        if req in ('cuda', 'gpu') or req.startswith('cuda:'):
             if TORCH_AVAILABLE and torch.cuda.is_available():
-                return 'cuda'
-            else:
-                print("[YOLOEngine] CUDA tidak tersedia, menggunakan CPU")
-                return 'cpu'
-        return requested.lower()
+                return req if req.startswith('cuda') else 'cuda'
+            print("[YOLOEngine] CUDA tidak tersedia, menggunakan CPU")
+            return 'cpu'
+        if req in ('directml', 'dml'):
+            print("[YOLOEngine] DirectML tidak didukung ultralytics, menggunakan CPU")
+            return 'cpu'
+        return req or 'cpu'
 
     def _init_classifier(self) -> None:
         """Initialize the Stage 2 variety classifier (graceful)."""
@@ -134,6 +139,11 @@ class YOLOEngine:
         return crop
 
     def load_model(self, path: str) -> bool:
+        """Load the YOLO model from the given path (thread-safe)."""
+        with self._lock:
+            return self._load_model_locked(path)
+
+    def _load_model_locked(self, path: str) -> bool:
         """Load the YOLO model from the given path."""
         self.model_path = path
         self._load_error = ''
@@ -164,6 +174,11 @@ class YOLOEngine:
             return False
 
     def predict(self, frame: np.ndarray, conf_threshold: float = 0.5, imgsz: int = 640) -> list[dict]:
+        """Thread-safe wrapper: serializes inference against model swaps."""
+        with self._lock:
+            return self._predict_locked(frame, conf_threshold, imgsz)
+
+    def _predict_locked(self, frame: np.ndarray, conf_threshold: float = 0.5, imgsz: int = 640) -> list[dict]:
         """
         Run inference on a frame and return detections.
         
@@ -268,13 +283,22 @@ class YOLOEngine:
                 )
 
     def change_device(self, device: str) -> None:
+        """Move model to a different compute device (thread-safe)."""
+        with self._lock:
+            self._change_device_locked(device)
+
+    def _change_device_locked(self, device: str) -> None:
         """Move model to a different compute device."""
-        self.device = self._resolve_device(device)
+        new_device = self._resolve_device(device)
+        if new_device == self.device and self._is_loaded:
+            return
+        self.device = new_device
         if self._model is not None:
             try:
                 self._model.to(self.device)
             except Exception as e:
                 print(f"Failed to move model to {self.device}: {e}")
+                self.device = 'cpu'
                 self.load_model(self.model_path)
         # Also move classifier
         if self._classifier is not None and self._classifier.is_loaded:

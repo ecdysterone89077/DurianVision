@@ -139,7 +139,7 @@ class ControlPanel(QMainWindow):
         self.lbl_status = QLabel("Idle")
         self.lbl_fps = QLabel("0 FPS")
         self.lbl_device = QLabel("CPU")
-        self.lbl_area = QLabel("Area: Full")
+        self.lbl_area = QLabel("Area: -")
         self.lbl_pipeline = QLabel("")
         
         status_layout.addWidget(self.lbl_status_dot)

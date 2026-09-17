@@ -1,6 +1,8 @@
 """
 Performance tab for DurianVision control panel.
 """
+import os
+
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtWidgets import (
     QButtonGroup,
@@ -15,6 +17,7 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
+from core.paths import get_meipass_dir
 from ui.styles.theme import Theme
 from ui.widgets.fps_slider import FPSSlider
 from ui.widgets.resource_monitor import ResourceMonitor
@@ -73,7 +76,10 @@ class PerformanceTab(QWidget):
         model_layout = QHBoxLayout(model_group)
         
         self.model_combo = QComboBox()
-        self.model_combo.addItems(["best.pt", "yolo11n.pt"])
+        model_base_dir = str(get_meipass_dir())
+        for model_name in ("best.pt", "yolo11n.pt"):
+            self.model_combo.addItem(model_name, os.path.join(model_base_dir, model_name))
+        self.model_combo.currentIndexChanged.connect(self._on_model_selected)
         self.btn_change_model = QPushButton("📂 Ganti Model...")
         self.btn_change_model.clicked.connect(self._on_change_model)
         
@@ -111,6 +117,8 @@ class PerformanceTab(QWidget):
         self.radio_cpu = QRadioButton("CPU")
         self.radio_cuda = QRadioButton("CUDA")
         self.radio_dml = QRadioButton("DirectML")
+        self.radio_dml.setEnabled(False)
+        self.radio_dml.setToolTip("DirectML belum didukung ultralytics — gunakan CPU/CUDA")
         self.radio_cpu.setChecked(True)
         
         self.dev_btn_group = QButtonGroup()
@@ -143,14 +151,17 @@ class PerformanceTab(QWidget):
         main_layout.addStretch()
         
     def _on_change_model(self) -> None:
-        import os
         file, _ = QFileDialog.getOpenFileName(
             self, "Pilih Model YOLO", "", "Model Files (*.pt *.onnx)"
         )
         if file:
-            self.model_combo.addItem(os.path.basename(file))
+            self.model_combo.addItem(os.path.basename(file), file)
             self.model_combo.setCurrentIndex(self.model_combo.count() - 1)
-            self.model_changed.emit(file)
+
+    def _on_model_selected(self, idx: int) -> None:
+        if idx < 0:
+            return
+        self.model_changed.emit(self.model_combo.itemData(idx) or self.model_combo.currentText())
             
     def _on_size_changed(self, idx: int) -> None:
         size_str = self.size_combo.currentText().split('x')[0]

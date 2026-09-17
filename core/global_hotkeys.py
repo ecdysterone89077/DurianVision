@@ -2,6 +2,9 @@
 Global hotkeys module for DurianVision.
 Listens for keyboard shortcuts even when the app is in the background/system tray.
 """
+import os
+import sys
+
 from PyQt6.QtCore import QObject, pyqtSignal
 
 try:
@@ -9,6 +12,46 @@ try:
     PYNPUT_AVAILABLE = True
 except ImportError:
     PYNPUT_AVAILABLE = False
+
+
+def _typing_context() -> bool:
+    """True jika window aktif saat ini sedang menampilkan kursor teks (user mengetik).
+
+    Heuristik: GetGUIThreadInfo.hwndCaret != 0. Cukup untuk mencegah hotkey
+    tombol polos (mis. Space) mencuri ketikan di aplikasi lain.
+    """
+    if sys.platform != 'win32':
+        return False
+    try:
+        import ctypes
+        from ctypes import wintypes
+
+        class GUITHREADINFO(ctypes.Structure):
+            _fields_ = [
+                ('cbSize', wintypes.DWORD),
+                ('flags', wintypes.DWORD),
+                ('hwndActive', wintypes.HWND),
+                ('hwndFocus', wintypes.HWND),
+                ('hwndCapture', wintypes.HWND),
+                ('hwndMenuOwner', wintypes.HWND),
+                ('hwndMoveSize', wintypes.HWND),
+                ('hwndCaret', wintypes.HWND),
+                ('rcCaret', wintypes.RECT),
+            ]
+
+        user32 = ctypes.windll.user32
+        hwnd = user32.GetForegroundWindow()
+        pid = wintypes.DWORD()
+        tid = user32.GetWindowThreadProcessId(hwnd, ctypes.byref(pid))
+        if pid.value == os.getpid():
+            return False
+        info = GUITHREADINFO()
+        info.cbSize = ctypes.sizeof(GUITHREADINFO)
+        if user32.GetGUIThreadInfo(tid, ctypes.byref(info)):
+            return bool(info.hwndCaret)
+    except Exception:
+        pass
+    return False
 
 
 class GlobalHotkeys(QObject):
@@ -77,6 +120,8 @@ class GlobalHotkeys(QObject):
         hide_hk = self._convert_hotkey_format(self._hotkey_config.get('hide', '<ctrl>+<shift>+h'))
         if hide_hk:
             hotkey_map[hide_hk] = self._on_hide
+
+        hotkey_map = {hk: self._guard_bare_key(hk, cb) for hk, cb in hotkey_map.items()}
         
         try:
             self._listener = keyboard.GlobalHotKeys(hotkey_map)
@@ -100,6 +145,23 @@ class GlobalHotkeys(QObject):
             self.stop()
             self.start()
     
+    @staticmethod
+    def _is_bare_key(hotkey: str) -> bool:
+        """True jika hotkey hanya satu tombol tanpa modifier (mis. <space>)."""
+        return '+' not in hotkey
+
+    def _guard_bare_key(self, hotkey: str, callback):
+        """Bungkus hotkey polos agar tidak trigger saat user sedang mengetik."""
+        if not self._is_bare_key(hotkey):
+            return callback
+
+        def guarded() -> None:
+            if _typing_context():
+                return
+            callback()
+
+        return guarded
+
     def _on_snapshot(self) -> None:
         self.snapshot_triggered.emit()
     
@@ -115,3 +177,14 @@ class GlobalHotkeys(QObject):
     @property
     def is_running(self) -> bool:
         return self._is_running
+
+
+if __name__ == '__main__':
+    assert GlobalHotkeys._convert_hotkey_format('Space') == '<space>'
+    assert GlobalHotkeys._convert_hotkey_format('Ctrl+Shift+D') == '<ctrl>+<shift>+d'
+    assert GlobalHotkeys._convert_hotkey_format('<ctrl>+<shift>+h') == '<ctrl>+<shift>+h'
+    assert GlobalHotkeys._is_bare_key('<space>') is True
+    assert GlobalHotkeys._is_bare_key('<ctrl>+<shift>+d') is False
+    assert isinstance(_typing_context(), bool)
+    assert GlobalHotkeys({'snapshot': 'Space'})._guard_bare_key('<space>', lambda: None) is not None
+    print('GlobalHotkeys self-check OK')

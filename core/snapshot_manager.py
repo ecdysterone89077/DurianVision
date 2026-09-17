@@ -161,11 +161,21 @@ class SnapshotManager(QObject):
         def on_finished(filepath):
             if filepath:
                 self.snapshot_saved.emit(filepath, worker.original_detections)
-            self._workers.remove(worker)
-            
+            with self._lock:
+                if worker in self._workers:
+                    self._workers.remove(worker)
+
         worker.finished.connect(on_finished)
-        self._workers.append(worker)
+        with self._lock:
+            self._workers.append(worker)
         worker.start()
+
+    def wait_for_workers(self, timeout_ms: int = 3000) -> None:
+        """Tunggu semua snapshot worker aktif selesai (dipanggil saat quit)."""
+        with self._lock:
+            workers = list(self._workers)
+        for worker in workers:
+            worker.wait(timeout_ms)
 
     def save_snapshot(self, frame: np.ndarray, detections: list[dict], 
                       metadata: dict | None = None,

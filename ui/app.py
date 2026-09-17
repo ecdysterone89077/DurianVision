@@ -20,6 +20,7 @@ from core.detection_worker import DetectionWorker
 from core.device_detector import DeviceDetector
 from core.global_hotkeys import GlobalHotkeys
 from core.log_manager import LogManager
+from core.paths import get_meipass_dir, get_user_data_dir, get_user_media_dir
 from core.screen_capture import ScreenCapture
 from core.snapshot_manager import SnapshotManager
 from core.yolo_engine import YOLOEngine
@@ -44,12 +45,12 @@ class DurianVisionApp(QObject):
         self.last_snapshot_time = 0
         self.auto_capture_settings = {'enabled': False, 'threshold': 85, 'interval': 3}
         self._last_ui_update = 0
+        self._pending_autostart = False
+        self._started_minimized = minimize
         
         self.session_start_time = None
         self.session_frames = 0
         self.session_distribution = {}
-        # AppData path for writable data
-        from core.paths import get_user_data_dir, get_user_media_dir, get_meipass_dir
         
         appdata_dir = get_user_data_dir()
         
@@ -113,6 +114,7 @@ class DurianVisionApp(QObject):
         # Initial config sync to UI
         self.control_panel.settings_tab.load_settings(self.config.config)
         self.overlay.update_display_settings(self.config.get_section('overlay'))
+        self.control_panel.snapshot_tab.gallery.load_from_directory(self.snapshot_mgr.save_dir)
         
         # Sync confidence slider with config
         initial_conf = int(self.config.get('detection', 'confidence_threshold', 0.5) * 100)
@@ -131,8 +133,8 @@ class DurianVisionApp(QObject):
             self.control_panel.show()
             
         if autostart:
+            self._pending_autostart = True
             QTimer.singleShot(500, self.roi_selector.select_fullscreen)
-            QTimer.singleShot(600, self.start_detection)
 
     def _connect_signals(self) -> None:
         """Connect all signals between UI and Core."""
@@ -187,6 +189,7 @@ class DurianVisionApp(QObject):
         # -- ROI Selector --
         # FIX: The crash occurred here previously because the signal emitted 5 args but the slot accepted 1
         self.roi_selector.roi_selected.connect(self._handle_roi_selected)
+        self.roi_selector.roi_cancelled.connect(self._handle_roi_cancelled)
         
         # -- Detection Worker --
         self.worker.frame_processed.connect(self._handle_frame_processed)
@@ -204,6 +207,10 @@ class DurianVisionApp(QObject):
     @pyqtSlot(int, int, int, int, dict)
     def _handle_roi_selected(self, x: int, y: int, w: int, h: int, device_info: dict) -> None:
         """Handle area selection from ROI tool."""
+        mode = self.config.get('device_detection', 'mode', 'auto')
+        if mode != 'auto':
+            device_info = DeviceDetector.detect_device(w, h, mode)
+
         self.config.set('roi', 'x', x)
         self.config.set('roi', 'y', y)
         self.config.set('roi', 'width', w)
@@ -238,8 +245,20 @@ class DurianVisionApp(QObject):
         overlay_settings['font_size'] = device_info.get('font_size', 12)
         overlay_settings['show_mini_status'] = device_info.get('show_mini_status', True)
         self.overlay.update_display_settings(overlay_settings)
-        
-        self.control_panel.show()
+
+        self.control_panel.update_status_bar({'area': f"{w}×{h}"})
+        if not self._started_minimized:
+            self.control_panel.show()
+        if self._pending_autostart:
+            self._pending_autostart = False
+            QTimer.singleShot(200, self.start_detection)
+
+    @pyqtSlot()
+    def _handle_roi_cancelled(self) -> None:
+        """Batal memilih area — kembalikan panel kontrol."""
+        self._pending_autostart = False
+        if not self._started_minimized:
+            self.control_panel.show()
 
     def start_detection(self) -> None:
         """Start the detection worker and overlay."""
@@ -251,7 +270,18 @@ class DurianVisionApp(QObject):
             
         if self.is_detecting:
             return
-            
+
+        # Fallback: belum pernah pilih ROI -> pakai layar utama penuh
+        if self.config.get('roi', 'width', 0) <= 0:
+            screen = QApplication.primaryScreen()
+            if screen is not None:
+                geom = screen.geometry()
+                device_info = DeviceDetector.detect_device(
+                    geom.width(), geom.height(),
+                    self.config.get('device_detection', 'mode', 'auto')
+                )
+                self._handle_roi_selected(geom.x(), geom.y(), geom.width(), geom.height(), device_info)
+
         self.is_detecting = True
         self.session_start_time = time.time()
         self.session_frames = 0
@@ -313,9 +343,28 @@ class DurianVisionApp(QObject):
         self.roi_selector.show()
 
     def _play_detection_sound(self):
-        def play():
-            winsound.Beep(1000, 200)
-        threading.Thread(target=play, daemon=True).start()
+        volume = float(self.config.get('audio', 'volume', 0.5))
+        if volume <= 0:
+            return
+
+        def play(vol: float) -> None:
+            import math
+            import struct
+            rate, duration, freq = 22050, 0.15, 1000
+            n = int(rate * duration)
+            amp = int(32767 * vol)
+            samples = struct.pack(
+                f'<{n}h',
+                *[int(amp * math.sin(2 * math.pi * freq * i / rate)) for i in range(n)]
+            )
+            header = (
+                b'RIFF' + struct.pack('<I', 36 + len(samples)) + b'WAVEfmt ' +
+                struct.pack('<IHHIIHH', 16, 1, 1, rate, rate * 2, 2, 16) +
+                b'data' + struct.pack('<I', len(samples))
+            )
+            winsound.PlaySound(header + samples, winsound.SND_MEMORY)
+
+        threading.Thread(target=play, args=(volume,), daemon=True).start()
 
     @pyqtSlot(bool)
     def _handle_sound_toggled(self, enabled: bool) -> None:
@@ -510,9 +559,41 @@ class DurianVisionApp(QObject):
         self.config.save()
         
         self.overlay.update_display_settings(settings.get('overlay', {}))
-        self.snapshot_mgr.save_dir = settings.get('snapshot', {}).get('save_dir', 'snapshots')
-        self.log_mgr.save_dir = settings.get('log', {}).get('save_dir', 'logs')
-        self.hotkeys.update_hotkeys(settings.get('hotkeys', {}))
+
+        snapshot_settings = settings.get('snapshot')
+        if snapshot_settings is not None:
+            self.snapshot_mgr.save_dir = self._resolve_dir(
+                snapshot_settings.get('save_dir', ''), get_user_media_dir()
+            )
+        log_settings = settings.get('log')
+        if log_settings is not None:
+            self.log_mgr.save_dir = self._resolve_dir(
+                log_settings.get('save_dir', ''), os.path.join(get_user_data_dir(), 'logs')
+            )
+        audio = settings.get('audio')
+        if audio is not None:
+            self._sound_enabled = bool(audio.get('enabled', True))
+            self.tray.sound_enabled = self._sound_enabled
+            self.tray.sound_action.setText(
+                '🔇 Matikan Suara' if self._sound_enabled else '🔊 Aktifkan Suara'
+            )
+        hotkeys = settings.get('hotkeys')
+        if hotkeys:
+            self.hotkeys.update_hotkeys(hotkeys)
+
+    @staticmethod
+    def _resolve_dir(path: str, default_dir: str) -> str:
+        """Ubah path folder (absolut / relatif / legacy) menjadi folder absolut yang valid."""
+        if not path:
+            resolved = default_dir
+        elif os.path.isabs(path):
+            resolved = path
+        elif path == 'snapshots':
+            resolved = default_dir
+        else:
+            resolved = os.path.join(get_user_data_dir(), path)
+        os.makedirs(resolved, exist_ok=True)
+        return resolved
 
     @pyqtSlot(str)
     def _handle_worker_error(self, err_msg: str) -> None:
@@ -556,6 +637,7 @@ class DurianVisionApp(QObject):
         """Clean up and exit application."""
         self.stop_detection()
         self.hotkeys.stop()
+        self.snapshot_mgr.wait_for_workers()
         self.tray.hide()
         self.config.save()
         QApplication.quit()

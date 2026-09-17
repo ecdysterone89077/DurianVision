@@ -21,6 +21,7 @@ class RoISelectorWindow(QWidget):
     """Fullscreen overlay for selecting a screen region of interest."""
     
     roi_selected = pyqtSignal(int, int, int, int, dict)  # x, y, w, h, device_info
+    roi_cancelled = pyqtSignal()
 
     def __init__(self):
         super().__init__()
@@ -212,6 +213,7 @@ class RoISelectorWindow(QWidget):
 
     def cancel_selection(self) -> None:
         """Cancel selection and close."""
+        self.roi_cancelled.emit()
         self.close()
 
     def paintEvent(self, event) -> None:
