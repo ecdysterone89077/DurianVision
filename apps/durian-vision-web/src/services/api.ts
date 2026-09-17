@@ -22,6 +22,9 @@ export const apiService = {
   // Snapshots
   getSnapshots: (params?: any) => apiClient.get('/snapshots', { params }),
   getSnapshot: (id: string) => apiClient.get(`/snapshots/${id}`),
+  uploadSnapshot: (formData: FormData) => apiClient.post('/snapshots', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  }),
   deleteSnapshot: (id: string) => apiClient.delete(`/snapshots/${id}`),
 
   // Models

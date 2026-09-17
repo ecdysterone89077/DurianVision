@@ -13,13 +13,19 @@ export const addBatchLogs = async (logs: any[]) => {
   return await db.insert(detectionLogs).values(logs).returning();
 };
 
-export const getLogs = async (filters: { sessionId?: string; variety?: string; minConfidence?: number; limit?: number; offset?: number }) => {
-  let query = db.select().from(detectionLogs).$dynamic();
+const buildConditions = (filters: { sessionId?: string; variety?: string; minConfidence?: number }) => {
   const conditions = [];
-
   if (filters.sessionId) conditions.push(eq(detectionLogs.sessionId, filters.sessionId));
   if (filters.variety) conditions.push(eq(detectionLogs.variety, filters.variety));
-  if (filters.minConfidence) conditions.push(gte(detectionLogs.confidence, filters.minConfidence));
+  if (filters.minConfidence !== undefined && filters.minConfidence !== null) {
+    conditions.push(gte(detectionLogs.confidence, filters.minConfidence));
+  }
+  return conditions;
+};
+
+export const getLogs = async (filters: { sessionId?: string; variety?: string; minConfidence?: number; limit?: number; offset?: number }) => {
+  let query = db.select().from(detectionLogs).$dynamic();
+  const conditions = buildConditions(filters);
 
   if (conditions.length > 0) {
     query = query.where(and(...conditions));
@@ -31,6 +37,16 @@ export const getLogs = async (filters: { sessionId?: string; variety?: string; m
   if (filters.offset) query = query.offset(filters.offset);
 
   return await query;
+};
+
+export const countLogs = async (filters: { sessionId?: string; variety?: string; minConfidence?: number }) => {
+  let query = db.select({ value: count() }).from(detectionLogs).$dynamic();
+  const conditions = buildConditions(filters);
+  if (conditions.length > 0) {
+    query = query.where(and(...conditions));
+  }
+  const rows = await query;
+  return Number(rows[0]?.value ?? 0);
 };
 
 export const getStats = async (sessionId?: string) => {

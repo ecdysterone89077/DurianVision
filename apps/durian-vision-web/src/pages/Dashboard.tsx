@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { useSessions, useModels, useLogDistribution } from '../hooks/use-queries';
+import { useSessions, useModels, useLogDistribution, useSystemMetrics, useInferenceInfo } from '../hooks/use-queries';
 import { apiService } from '../services/api';
 import DetectionStream from '../components/DetectionStream';
 
@@ -10,6 +10,8 @@ export default function Dashboard() {
   const activeModel = models?.find((m: any) => m.isActive);
 
   const { data: distribution } = useLogDistribution();
+  const { data: sysMetrics } = useSystemMetrics(10000);
+  const { data: inferenceInfo } = useInferenceInfo();
 
   const [activeSessionId, setActiveSessionId] = useState<string | null>(null);
   const [isDetecting, setIsDetecting] = useState(false);
@@ -158,7 +160,7 @@ export default function Dashboard() {
       <footer className="bg-surface-container-highest dark:bg-surface-container-highest fixed bottom-0 left-0 w-full z-50 flex justify-between items-center px-lg py-xs border-t border-surface-variant shadow-[0_-4px_24px_rgba(0,0,0,0.5)] md:pl-[calc(16rem+24px)] pointer-events-none">
         <div className="font-mono-data text-mono-data text-primary flex items-center gap-sm pointer-events-auto">
           <span className="w-2 h-2 rounded-full bg-primary active-pulse"></span>
-          Detection Active | 60 FPS | NVIDIA RTX 4090 | Area: Optimal
+          Detection {isDetecting ? 'Active' : 'Idle'} | CPU {sysMetrics?.cpu_percent != null ? `${Math.round(sysMetrics.cpu_percent)}%` : '--'} | RAM {sysMetrics?.memory_percent != null ? `${Math.round(sysMetrics.memory_percent)}%` : '--'} | {String(inferenceInfo?.device || 'CPU').toUpperCase()} | API v1.0
         </div>
         <div className="hidden md:flex gap-lg pointer-events-auto">
           <a className="font-mono-data text-mono-data text-tertiary dark:text-tertiary-fixed-dim hover:text-primary transition-colors opacity-70" href="#">System Logs</a>

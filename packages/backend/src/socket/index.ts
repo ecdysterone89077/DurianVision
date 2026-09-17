@@ -1,8 +1,12 @@
 import { Server as SocketIOServer } from 'socket.io';
 import { Server as HttpServer } from 'http';
+import { fromNodeHeaders } from 'better-auth/node';
+import { auth } from '../auth/index.js';
 import { logger } from '../utils/logger.js';
 import { predict, predictBase64 } from '../services/inference.service.js';
 import { addBatchLogs } from '../services/log.service.js';
+import { getSession } from '../services/detection.service.js';
+import { mapDetections } from '../utils/labels.js';
 
 let io: SocketIOServer;
 
@@ -16,6 +20,22 @@ export const setupSocket = (httpServer: HttpServer) => {
   });
 
   const detectionNamespace = io.of('/detection');
+
+  // SECURITY: hanya socket dengan session login (cookie) yang boleh terhubung
+  detectionNamespace.use(async (socket, next) => {
+    try {
+      const session = await auth.api.getSession({
+        headers: fromNodeHeaders(socket.handshake.headers)
+      });
+      if (!session) {
+        return next(new Error('Unauthorized'));
+      }
+      next();
+    } catch (err) {
+      logger.warn('Socket auth rejected: %s', String(err));
+      next(new Error('Unauthorized'));
+    }
+  });
 
   detectionNamespace.on('connection', (socket) => {
     logger.info(`Socket connected: ${socket.id}`);
@@ -38,7 +58,7 @@ export const setupSocket = (httpServer: HttpServer) => {
 
     socket.on('stop-detection', (data) => {
       logger.info(`Stopping detection...`, data);
-      detectionNamespace.to(`session_${data.sessionId}`).emit('session-status', { status: 'stopped' });
+      detectionNamespace.to(`session_${data.sessionId}`).emit('session-status', { status: 'completed' });
     });
 
     socket.on('update-config', (config) => {
@@ -64,6 +84,7 @@ export const setupSocket = (httpServer: HttpServer) => {
 
     // --- DOS PROTECTION: RATE LIMITER ---
     const lastFrameMap = new Map<string, number>();
+    const sessionCache = new Map<string, boolean>();
 
     socket.on('process-frame', async (data) => {
       // SECURITY: Throttle to max ~33 FPS (30ms per frame) to protect FastAPI
@@ -82,6 +103,11 @@ export const setupSocket = (httpServer: HttpServer) => {
         } else {
           result = await predictBase64(data.image, data.config);
         }
+
+        // Normalisasi nama kelas model -> nama tampilan UI (mis. 'bawor' -> 'Bawor')
+        if (Array.isArray(result?.detections)) {
+          result.detections = mapDetections(result.detections);
+        }
         
         // Emit result back to the specific session room
         io.of('/detection').to(`session_${data.sessionId}`).emit('detection-result', {
@@ -91,6 +117,16 @@ export const setupSocket = (httpServer: HttpServer) => {
 
         // Buffer detections to database (Ring Buffer Optimization)
         if (data.sessionId && result.detections && result.detections.length > 0) {
+          let sessionValid = sessionCache.get(data.sessionId);
+          if (sessionValid === undefined) {
+            sessionValid = !!(await getSession(data.sessionId).catch(() => null));
+            sessionCache.set(data.sessionId, sessionValid);
+          }
+
+          if (!sessionValid) {
+            return;
+          }
+
           const logEntries = result.detections.map((d: any) => ({
             sessionId: data.sessionId,
             variety: d.class_name,

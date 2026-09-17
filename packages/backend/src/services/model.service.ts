@@ -2,7 +2,10 @@ import { db } from '../db/index.js';
 import { aiModels } from '../db/schema/index.js';
 import { eq } from 'drizzle-orm';
 import { loadModel as loadInferenceModel } from './inference.service.js';
+import { MODEL_CLASS_MAP } from '../utils/labels.js';
 import fs from 'fs';
+
+const MODEL_CLASS_NAMES = Object.values(MODEL_CLASS_MAP);
 
 export const uploadModel = async (file: Express.Multer.File, name?: string) => {
   const [model] = await db.insert(aiModels).values({
@@ -10,7 +13,7 @@ export const uploadModel = async (file: Express.Multer.File, name?: string) => {
     filepath: file.path,
     filename: file.originalname,
     fileSize: file.size,
-    classNames: ['Bawor', 'Montong', 'Musang King', 'Petruk', 'Monthong', 'Sunan', 'Kani', 'Matahari', 'Sitokong', 'Lainnya'],
+    classNames: MODEL_CLASS_NAMES,
     isActive: false,
   }).returning();
   return model;

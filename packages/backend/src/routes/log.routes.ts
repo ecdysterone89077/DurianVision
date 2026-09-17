@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getLogs, getStats, getDistribution, exportCSV, exportXLSX, clearLogs } from '../services/log.service.js';
+import { getLogs, countLogs, getStats, getDistribution, exportCSV, exportXLSX, clearLogs } from '../services/log.service.js';
 import { success } from '../utils/api-response.js';
 import { requireAuth } from '../middleware/auth.middleware.js';
 
@@ -9,20 +9,27 @@ router.use(requireAuth);
 
 router.get('/', async (req, res, next) => {
   try {
-    const { sessionId, variety, minConfidence, limit, offset } = req.query;
-    const data = await getLogs({
+    const { sessionId, variety, minConfidence, limit, offset, page } = req.query;
+    const limitNum = limit ? Number(limit) : 50;
+    const pageNum = page ? Math.max(1, Number(page)) : 1;
+    const offsetNum = offset ? Number(offset) : (pageNum - 1) * limitNum;
+
+    const filters = {
       sessionId: sessionId as string,
       variety: variety as string,
-      minConfidence: minConfidence ? Number(minConfidence) : undefined,
-      limit: limit ? Number(limit) : undefined,
-      offset: offset ? Number(offset) : undefined
+      minConfidence: minConfidence ? Number(minConfidence) : undefined
+    };
+
+    const [data, total] = await Promise.all([
+      getLogs({ ...filters, limit: limitNum, offset: offsetNum }),
+      countLogs(filters)
+    ]);
+
+    res.json({
+      success: true,
+      data,
+      meta: { total, page: pageNum, limit: limitNum, totalPages: Math.max(1, Math.ceil(total / limitNum)) }
     });
-    const responseData = Array.isArray(data) ? { data, meta: { total: data.length } } : data;
-    if (Array.isArray(data)) {
-      res.json({ success: true, data: data, meta: { total: data.length } });
-    } else {
-      res.json(success(data));
-    }
   } catch (e) {
     next(e);
   }

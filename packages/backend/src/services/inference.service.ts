@@ -2,7 +2,7 @@ const INFERENCE_URL = process.env.INFERENCE_URL || 'http://localhost:8001';
 
 export const predict = async (imageBuffer: Buffer, config?: { confidence?: number; iou?: number; imgsz?: number }) => {
   const formData = new FormData();
-  formData.append('file', new Blob([imageBuffer], { type: 'image/jpeg' }), 'image.jpg');
+  formData.append('file', new Blob([new Uint8Array(imageBuffer)], { type: 'image/jpeg' }), 'image.jpg');
   if (config?.confidence !== undefined) {
     formData.append('confidence', String(config.confidence));
   }

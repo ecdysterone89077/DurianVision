@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { socket } from '../lib/socket';
 import { useSettings } from '../hooks/use-queries';
+import { apiService } from '../services/api';
 
 interface DetectionStreamProps {
   sessionId: string;
@@ -13,6 +14,7 @@ export default function DetectionStream({ sessionId, isActive, onInferenceTime }
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const { data: settings } = useSettings();
   const [streamActive, setStreamActive] = useState(false);
+  const lastSnapshotRef = useRef(0);
   
   const fpsLimit = settings?.fpsLimit || 5;
   const intervalRef = useRef<number | null>(null);
@@ -119,6 +121,34 @@ export default function DetectionStream({ sessionId, isActive, onInferenceTime }
     });
   }, [settings]);
 
+  const maybeAutoSnapshot = useCallback((detections: any[]) => {
+    if (!settings?.autoSnapshot || !detections || detections.length === 0) return;
+    const intervalMs = (settings?.autoSnapshotInterval ?? 30) * 1000;
+    const now = Date.now();
+    if (now - lastSnapshotRef.current < intervalMs) return;
+    const video = videoRef.current;
+    if (!video || !video.videoWidth) return;
+    lastSnapshotRef.current = now;
+
+    const canvas = document.createElement('canvas');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    canvas.getContext('2d')?.drawImage(video, 0, 0);
+    canvas.toBlob(async (blob) => {
+      if (!blob) return;
+      const form = new FormData();
+      form.append('file', blob, `snapshot_${now}.jpg`);
+      form.append('sessionId', sessionId);
+      form.append('detections', JSON.stringify(detections));
+      form.append('metadata', JSON.stringify({ source: 'web', device_type: 'webcam' }));
+      try {
+        await apiService.uploadSnapshot(form);
+      } catch (e) {
+        console.error('[DetectionStream] Auto snapshot failed:', e);
+      }
+    }, 'image/jpeg', 0.9);
+  }, [settings, sessionId]);
+
   // Socket Connection and Frame Loop
   useEffect(() => {
     const handleConnect = () => {
@@ -136,6 +166,7 @@ export default function DetectionStream({ sessionId, isActive, onInferenceTime }
     const handleDetection = (data: any) => {
       if (onInferenceTime) onInferenceTime(data.inferenceTimeMs);
       drawDetections(data.detections);
+      maybeAutoSnapshot(data.detections);
     };
 
     socket.on('detection-result', handleDetection);
@@ -152,7 +183,7 @@ export default function DetectionStream({ sessionId, isActive, onInferenceTime }
       socket.off('connect', handleConnect);
       socket.off('connect_error', handleConnectError);
     };
-  }, [sessionId, onInferenceTime, drawDetections]);
+  }, [sessionId, onInferenceTime, drawDetections, maybeAutoSnapshot]);
 
   // Frame Capture Loop
   useEffect(() => {
@@ -179,6 +210,7 @@ export default function DetectionStream({ sessionId, isActive, onInferenceTime }
           image: blob, // Socket.io automatically converts File/Blob to ArrayBuffer binary
           config: { 
             confidence: settings?.confidenceThreshold || 0.5,
+            iou: settings?.iouThreshold ?? 0.45,
             imgsz: settings?.inferenceSize || 640 
           }
         });

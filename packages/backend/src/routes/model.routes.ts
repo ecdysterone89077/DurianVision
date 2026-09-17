@@ -3,6 +3,7 @@ import { uploadModel, getModels, getModel, activateModel, deleteModel } from '..
 import { predict, reloadModel } from '../services/inference.service.js';
 import { modelUpload, imageUpload } from '../middleware/upload.middleware.js';
 import { success } from '../utils/api-response.js';
+import { mapDetections } from '../utils/labels.js';
 import { requireAuth } from '../middleware/auth.middleware.js';
 import fs from 'fs';
 
@@ -68,6 +69,9 @@ router.post('/:id/predict', imageUpload.single('file'), async (req, res, next) =
     const buffer = fs.readFileSync(req.file.path);
     const { config } = req.body;
     const data = await predict(buffer, config ? JSON.parse(config) : undefined);
+    if (Array.isArray(data?.detections)) {
+      data.detections = mapDetections(data.detections);
+    }
     res.json(success(data));
   } catch (e) {
     next(e);
