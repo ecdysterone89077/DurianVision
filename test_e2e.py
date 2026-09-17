@@ -5,6 +5,9 @@ Tests complete user workflows across all components.
 import sys, os, json, time, base64, struct, zlib
 import urllib.request, urllib.error
 
+sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+sys.stderr.reconfigure(encoding='utf-8', errors='replace')
+
 INFERENCE = "http://localhost:8001"
 BACKEND = "http://localhost:3005"
 

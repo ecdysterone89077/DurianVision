@@ -1,6 +1,9 @@
 """Validasi kedua notebook Colab + integrasi Level 3 end-to-end"""
 import json, sys, os
 
+sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+sys.stderr.reconfigure(encoding='utf-8', errors='replace')
+
 print("=" * 60)
 print("  VALIDASI FINAL: NOTEBOOK + INTEGRASI LEVEL 3")
 print("=" * 60)

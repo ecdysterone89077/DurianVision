@@ -9,6 +9,9 @@ import sys, os, json, time, base64, struct, zlib, threading, hashlib
 import concurrent.futures, statistics, traceback
 import urllib.request, urllib.error, urllib.parse
 
+sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+sys.stderr.reconfigure(encoding='utf-8', errors='replace')
+
 INFERENCE = "http://localhost:8001"
 BACKEND = "http://localhost:3005"
 

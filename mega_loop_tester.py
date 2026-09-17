@@ -1,9 +1,13 @@
 import os
+import sys
 import time
 import requests
 import asyncio
 import aiohttp
 import psutil
+
+sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+sys.stderr.reconfigure(encoding='utf-8', errors='replace')
 
 print("==================================================")
 print("  INITIATING 50-LOOP CHAOS & INTEGRITY TEST")

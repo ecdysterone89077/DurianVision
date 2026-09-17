@@ -1,6 +1,9 @@
 """Verifikasi Level 1 Fix — mapping, colors, config"""
 import sys, os, json
 
+sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+sys.stderr.reconfigure(encoding='utf-8', errors='replace')
+
 print("=" * 60)
 print("  VERIFIKASI LEVEL 1 FIX")
 print("=" * 60)

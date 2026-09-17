@@ -5,6 +5,9 @@ import sys
 import re
 from pathlib import Path
 
+sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+sys.stderr.reconfigure(encoding='utf-8', errors='replace')
+
 # --- KONFIGURASI ABSOLUT ---
 PROJECT_DIR = Path(r"D:\GUI Duren\GUI Duren")
 INNO_SETUP_COMPILER = Path(r"C:\Program Files (x86)\Inno Setup 6\ISCC.exe")

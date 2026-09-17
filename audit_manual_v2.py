@@ -2,6 +2,9 @@
 import json, sys, os, re
 sys.path.insert(0, r'd:\GUI Duren\GUI Duren')
 
+sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+sys.stderr.reconfigure(encoding='utf-8', errors='replace')
+
 results = []
 def check(desc, condition):
     status = "OK" if condition else "GAGAL"

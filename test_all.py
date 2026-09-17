@@ -6,6 +6,9 @@ import sys, os, json, time, traceback, base64
 import urllib.request
 import urllib.error
 
+sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+sys.stderr.reconfigure(encoding='utf-8', errors='replace')
+
 INFERENCE_URL = "http://localhost:8001"
 BACKEND_URL = "http://localhost:3005"
 

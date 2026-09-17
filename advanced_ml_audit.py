@@ -1,4 +1,5 @@
 import os
+import sys
 import cv2
 import numpy as np
 import time
@@ -7,6 +8,9 @@ import glob
 import json
 import warnings
 warnings.filterwarnings('ignore')
+
+sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+sys.stderr.reconfigure(encoding='utf-8', errors='replace')
 
 try:
     from ultralytics import YOLO

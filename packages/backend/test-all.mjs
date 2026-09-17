@@ -1,4 +1,31 @@
 import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
+const MODEL_PATH = path.join(ROOT, 'durian-yolov11-results', 'weights', 'best.pt');
+const IMAGE_PATH = path.join(ROOT, 'duren ngetes.jpeg');
+
+async function signIn(email, password) {
+  const res = await fetch('http://localhost:3005/api/auth/sign-in/email', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Origin': 'http://localhost:5173' },
+    body: JSON.stringify({ email, password })
+  });
+  if (res.ok) return res.headers.get('set-cookie');
+  await fetch('http://localhost:3005/api/auth/sign-up/email', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Origin': 'http://localhost:5173' },
+    body: JSON.stringify({ name: 'Faunas Test', email, password })
+  });
+  const retry = await fetch('http://localhost:3005/api/auth/sign-in/email', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Origin': 'http://localhost:5173' },
+    body: JSON.stringify({ email, password })
+  });
+  if (!retry.ok) throw new Error('Auth failed: ' + await retry.text());
+  return retry.headers.get('set-cookie');
+}
 
 async function run() {
   console.log('--- STARTING COMPREHENSIVE END-TO-END TEST ---');
@@ -8,13 +35,7 @@ async function run() {
   
   try {
     console.log('[1/8] Testing Authentication...');
-    const loginRes = await fetch('http://localhost:3005/api/auth/sign-in/email', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Origin': 'http://localhost:5173' },
-      body: JSON.stringify({ email: 'faunas@gmail.com', password: 'faunas123' })
-    });
-    if (!loginRes.ok) throw new Error('Auth failed');
-    cookie = loginRes.headers.get('set-cookie');
+    cookie = await signIn('faunas@gmail.com', 'faunas123');
     console.log('  -> Auth SUCCESS');
     
     console.log('[2/8] Testing Settings...');
@@ -32,7 +53,7 @@ async function run() {
     
     console.log('[3/8] Testing Model Upload & Fetch...');
     const imgData = new FormData();
-    const fileBuffer = fs.readFileSync('D:\\GUI Duren\\durian-yolov11-results\\weights\\best.pt');
+    const fileBuffer = fs.readFileSync(MODEL_PATH);
     imgData.append('file', new Blob([fileBuffer]), 'best.pt');
     imgData.append('name', 'test_model');
     const uploadRes = await fetch('http://localhost:3005/api/models/upload', {
@@ -52,7 +73,7 @@ async function run() {
     
     console.log('[5/8] Testing Inference Prediction...');
     const pData = new FormData();
-    const pBuffer = fs.readFileSync('D:\\GUI Duren\\duren ngetes.jpeg');
+    const pBuffer = fs.readFileSync(IMAGE_PATH);
     pData.append('file', new Blob([pBuffer], { type: 'image/jpeg' }), 'duren.jpeg');
     const predRes = await fetch('http://localhost:3005/api/models/' + modelId + '/predict', {
       method: 'POST', headers: { 'Cookie': cookie }, body: pData
@@ -79,6 +100,7 @@ async function run() {
     
   } catch (err) {
     console.error('TEST FAILED:', err);
+    process.exitCode = 1;
   }
 }
 run();

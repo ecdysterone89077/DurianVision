@@ -1,7 +1,9 @@
+from pathlib import Path
 from ultralytics import YOLO
 
-model = YOLO(r'D:\GUI Duren\durian-yolov11-results\weights\best.pt')
-results = model(r'D:\GUI Duren\duren ngetes.jpeg')
+BASE = Path(__file__).resolve().parent
+model = YOLO(str(BASE / 'models' / 'best.pt'))
+results = model(str(BASE.parent.parent / 'duren ngetes.jpeg'))
 
 for r in results:
     for box in r.boxes:
@@ -9,4 +11,3 @@ for r in results:
         cls_name = model.names[cls_id]
         conf = float(box.conf[0])
         print(f'Detected: {cls_name} (Confidence: {conf:.2f})')
-
