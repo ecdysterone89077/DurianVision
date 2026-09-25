@@ -131,3 +131,20 @@ test_*.py verify_*.py    # suite verifikasi
   (`core/global_hotkeys.py` memeriksa caret window aktif).
 - Socket `/detection` mewajibkan session login; frame tanpa sesi valid tidak ditulis ke DB.
 - Mesin ini tanpa CUDA (`torch 2.13.0+cpu`) — semua inferensi berjalan di CPU.
+
+---
+
+## Reproduksibilitas v2 — 11 varietas (naskah Agroteknika)
+
+Eksperimen v1 di repo ini (6 kelas, dataset `jenis-durian-ubzwg` v1) adalah
+pendahulu. Naskah memakai eksperimen v2: dataset primer "Deteksi Jenis Durian" v2
+(Roboflow, 430 citra 301/87/42, 11 kelas, CC BY 4.0) + YOLOv11n
+(100 epoch, patience 20, batch 16, seed 0 deterministik).
+
+Folder `reproduce-v2/` berisi paket produksi ulang: skrip latih persis Tabel 3
+(`train_durianvision_v2.py`), kunci versi (`requirements.lock`), kerangka
+`data.yaml`, peta label 11 kelas, pemeriksa pra-latih, dan `REPRODUCE.md`.
+
+Checklist sebelum klaim naskah "bobot aktif di repo" benar:
+- [ ] Unggah `best.pt` 11-kelas (epoch 51) ke `packages/inference/models/`
+- [ ] Samakan pemetaan label 11 kelas di desktop, `labels.ts`, dan `engine.py`

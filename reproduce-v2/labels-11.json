@@ -1,0 +1,1 @@
+{"classes": ["Bawor", "D24", "Duri Hitam", "Lokal", "Merah", "Montong", "Musang King", "Pelangi", "Sane", "Sunan", "Super Tembaga"], "note": "Samakan persis dengan model.names best.pt 11-kelas di desktop, backend (labels.ts), dan inference (engine.py). Ejaan final ikut data.yaml ekspor Roboflow v2."}

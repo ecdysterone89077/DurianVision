@@ -1,0 +1,7 @@
+# Kunci versi sesuai Tabel 2 naskah (ultralytics 8.4.131, PyTorch 2.13.0+cpu)
+--extra-index-url https://download.pytorch.org/whl/cpu
+ultralytics==8.4.131
+torch==2.13.0+cpu
+numpy>=1.24.0
+pillow>=10.0.0
+pyyaml>=6.0

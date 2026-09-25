@@ -1,0 +1,15 @@
+# KERANGKA — ganti dengan data.yaml bawaan ekspor Roboflow v2 (itu kebenaran urutan kelas).
+# Harus terpenuhi: nc: 11; train/val/test = 301/87/42; 11 nama di bawah (ejaan ikut ekspor).
+train: <path-ekspor>/train/images
+val: <path-ekspor>/valid/images
+test: <path-ekspor>/test/images
+
+nc: 11
+names: ['Bawor', 'D24', 'Duri Hitam', 'Lokal', 'Merah', 'Montong', 'Musang King',
+  'Pelangi', 'Sane', 'Sunan', 'Super Tembaga']
+roboflow:
+  workspace: penelitian-yolo-identifikasi-jenis-pisang
+  project: deteksi-jenis-durian-lmkb4
+  version: 2
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/penelitian-yolo-identifikasi-jenis-pisang/deteksi-jenis-durian-lmkb4/dataset/2
