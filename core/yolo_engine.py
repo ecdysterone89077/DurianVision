@@ -30,11 +30,16 @@ class YOLOEngine:
     # Mapping from YOLO model class names to UI display names
     MODEL_CLASS_MAP = {
         'bawor': 'Bawor',
-        'black thorn': 'Black Thorn',
-        'kanyao': 'Kani',
-        'monthong': 'Monthong',
+        'd24': 'D24',
+        'duri hitam': 'Duri Hitam',
+        'lokal': 'Lokal',
+        'merah': 'Merah',
+        'montong': 'Montong',
         'musang king': 'Musang King',
-        'not durian': 'Lainnya',
+        'pelangi': 'Pelangi',
+        'sane': 'Sane',
+        'sunan': 'Sunan',
+        'super tembaga': 'Super Tembaga',
     }
     
     def __init__(self, model_path: str = 'best.pt', device: str = 'cuda',
@@ -66,9 +71,8 @@ class YOLOEngine:
         self._classifier_path = classifier_path
         
         self.default_varieties = [
-            'Bawor', 'Black Thorn', 'Montong', 'Musang King', 'Petruk', 
-            'Monthong', 'Sunan', 'Kani', 'Matahari', 
-            'Sitokong', 'Lainnya'
+            'Bawor', 'D24', 'Duri Hitam', 'Lokal', 'Merah', 'Montong',
+            'Musang King', 'Pelangi', 'Sane', 'Sunan', 'Super Tembaga',
         ]
         
         self.load_model(self.model_path)
@@ -253,7 +257,7 @@ class YOLOEngine:
         Only processes detections that are NOT 'Lainnya' (i.e., actual durian detections).
         Only overrides YOLO class when classifier confidence > threshold.
         """
-        # Collect durian crops (skip 'Lainnya' / 'not durian')
+        # Collect durian crops (skip 'Lainnya')
         durian_indices = []
         crops = []
         

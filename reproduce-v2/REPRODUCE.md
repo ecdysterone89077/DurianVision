@@ -30,10 +30,10 @@ translasi 0,1, erasing 0,4, RandAugment). Naskah: berhenti epoch 71, terbaik epo
   hitungan split, 11 kelas, dan versi pustaka sebelum latih.
 
 ## 5) Yang WAJIB diunggah ke repo agar klaim naskah benar
-- [ ] `best.pt` 11-kelas (epoch 51) ke `packages/inference/models/` — HANYA penulis
+- [x] `best.pt` 11-kelas (epoch 51) ke `packages/inference/models/` + root (sudah dipasang commit ini) — HANYA penulis
       yang punya (hasil latih mesin penulis); tanpa ini klaim "bobot aktif di repo" salah.
 - [ ] `training/` diganti isi folder ini (skrip + lock + yaml + README ini).
-- [ ] Pemetaan label 11 kelas disamakan di: aplikasi desktop, backend
+- [x] Pemetaan label 11 kelas disamakan di: aplikasi desktop, backend
       (`packages/backend/src/utils/labels.ts`), layanan inferensi (`packages/inference/engine.py`)
       — cocokkan persis dengan `model.names` (lihat `labels-11.json`).
 - [ ] Perintah latih + tautan dataset ditambahkan ke README repo.

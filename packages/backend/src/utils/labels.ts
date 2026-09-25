@@ -1,10 +1,15 @@
 export const MODEL_CLASS_MAP: Record<string, string> = {
   'bawor': 'Bawor',
-  'black thorn': 'Black Thorn',
-  'kanyao': 'Kani',
-  'monthong': 'Monthong',
+  'd24': 'D24',
+  'duri hitam': 'Duri Hitam',
+  'lokal': 'Lokal',
+  'merah': 'Merah',
+  'montong': 'Montong',
   'musang king': 'Musang King',
-  'not durian': 'Lainnya',
+  'pelangi': 'Pelangi',
+  'sane': 'Sane',
+  'sunan': 'Sunan',
+  'super tembaga': 'Super Tembaga',
 };
 
 export const toDisplayName = (name: string): string =>

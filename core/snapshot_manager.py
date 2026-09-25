@@ -21,17 +21,18 @@ def hex_to_bgr(hex_color: str) -> tuple[int, int, int]:
 
 # All varieties with correct BGR values from hex
 DEFAULT_VARIETY_COLORS_BGR = {
-    'Bawor': hex_to_bgr('#22C55E'),       # (94, 197, 34)
-    'Black Thorn': hex_to_bgr('#10B981'), # (129, 185, 16)
-    'Montong': hex_to_bgr('#3B82F6'),     # (246, 130, 59)
-    'Musang King': hex_to_bgr('#EAB308'), # (8, 179, 234)
-    'Petruk': hex_to_bgr('#A855F7'),      # (247, 85, 168)
-    'Monthong': hex_to_bgr('#EC4899'),    # (153, 72, 236)
-    'Sunan': hex_to_bgr('#F97316'),       # (22, 115, 249)
-    'Kani': hex_to_bgr('#06B6D4'),        # (212, 182, 6)
-    'Matahari': hex_to_bgr('#EF4444'),    # (68, 68, 239)
-    'Sitokong': hex_to_bgr('#84CC16'),    # (22, 204, 132)
-    'Lainnya': hex_to_bgr('#94A3B8'),     # (184, 163, 148)
+    'Bawor': hex_to_bgr('#22C55E'),
+    'D24': hex_to_bgr('#14B8A6'),
+    'Duri Hitam': hex_to_bgr('#111827'),
+    'Lokal': hex_to_bgr('#A16207'),
+    'Merah': hex_to_bgr('#DC2626'),
+    'Montong': hex_to_bgr('#3B82F6'),
+    'Musang King': hex_to_bgr('#EAB308'),
+    'Pelangi': hex_to_bgr('#8B5CF6'),
+    'Sane': hex_to_bgr('#0EA5E9'),
+    'Sunan': hex_to_bgr('#F97316'),
+    'Super Tembaga': hex_to_bgr('#B45309'),
+    'Lainnya': hex_to_bgr('#94A3B8'),
 }
 
 

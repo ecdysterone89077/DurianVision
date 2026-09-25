@@ -8,7 +8,7 @@ from ultralytics import YOLO
 
 
 class YOLOv11Engine:
-    VARIETY_CLASSES = ['bawor', 'black thorn', 'kanyao', 'monthong', 'musang king', 'not durian']
+    VARIETY_CLASSES = ['bawor', 'd24', 'duri hitam', 'lokal', 'merah', 'montong', 'musang king', 'pelangi', 'sane', 'sunan', 'super tembaga']
 
     def __init__(self, model_path: str = 'models/best.pt', device: str = 'auto'):
         self._lock = threading.Lock()

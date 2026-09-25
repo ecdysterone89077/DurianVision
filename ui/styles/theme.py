@@ -8,16 +8,17 @@ class Theme:
     # Warna untuk varietas durian (UI-facing)
     VARIETY_COLORS: ClassVar[dict[str, str]] = {
         'Bawor': '#22C55E',
-        'Black Thorn': '#10B981',
+        'D24': '#14B8A6',
+        'Duri Hitam': '#111827',
+        'Lokal': '#A16207',
+        'Merah': '#DC2626',
         'Montong': '#3B82F6',
         'Musang King': '#EAB308',
-        'Petruk': '#A855F7',
-        'Monthong': '#EC4899',
+        'Pelangi': '#8B5CF6',
+        'Sane': '#0EA5E9',
         'Sunan': '#F97316',
-        'Kani': '#06B6D4',
-        'Matahari': '#EF4444',
-        'Sitokong': '#84CC16',
-        'Lainnya': '#94A3B8'
+        'Super Tembaga': '#B45309',
+        'Lainnya': '#94A3B8',
     }
 
     # Dark theme colors
@@ -50,11 +51,16 @@ class Theme:
     # Mapping from YOLO model class names to UI variety names
     MODEL_CLASS_MAP: ClassVar[dict[str, str]] = {
         'bawor': 'Bawor',
-        'black thorn': 'Black Thorn',
-        'kanyao': 'Kani',
-        'monthong': 'Monthong',
+        'd24': 'D24',
+        'duri hitam': 'Duri Hitam',
+        'lokal': 'Lokal',
+        'merah': 'Merah',
+        'montong': 'Montong',
         'musang king': 'Musang King',
-        'not durian': 'Lainnya',
+        'pelangi': 'Pelangi',
+        'sane': 'Sane',
+        'sunan': 'Sunan',
+        'super tembaga': 'Super Tembaga',
     }
 
     @classmethod
